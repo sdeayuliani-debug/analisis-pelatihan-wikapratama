@@ -1,0 +1,14 @@
+# Local/raw data
+bahan analisis pelatihan 2019 - 2025/
+*.pbix
+*.pptx
+
+# Python/Jupyter temporary files
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+
+# Local scratch files
+_test_*.py
+_test_*.txt
+run_log*.txt
