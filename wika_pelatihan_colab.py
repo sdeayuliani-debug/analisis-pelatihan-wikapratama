@@ -38,7 +38,7 @@ import matplotlib.patches as mpatches
 import matplotlib.gridspec as gridspec
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
-import warnings, os, io
+import warnings, os, io, textwrap
 from datetime import datetime
 
 warnings.filterwarnings('ignore')
@@ -633,76 +633,96 @@ print(" Grafik 4 disimpan: grafik_4_proyeksi_arima.png")
 # ============================================================
 # %%  [CELL 11] DASHBOARD GABUNGAN (1 PAGE)
 # ============================================================
-fig = plt.figure(figsize=(16, 10), dpi=130, facecolor=BG)
-gs  = gridspec.GridSpec(2, 3, figure=fig, hspace=0.42, wspace=0.32)
+fig = plt.figure(figsize=(18, 14), dpi=130, facecolor=BG)
+gs = gridspec.GridSpec(
+    3, 2, figure=fig,
+    height_ratios=[1.15, 1.0, 1.1],
+    width_ratios=[1.15, 1.0],
+    hspace=0.45, wspace=0.30
+)
+fig.subplots_adjust(top=0.92, bottom=0.09, left=0.13, right=0.97)
 
 # --- Judul ---
 fig.suptitle('Analisis & Proyeksi Jumlah Peserta Pelatihan WIKAPratama (2019–2027)',
-             fontsize=16, fontweight='bold', color=TEXT, y=0.98)
+             fontsize=18, fontweight='bold', color=TEXT, y=0.975)
 
-# --- Panel 1: Bar chart total (spans 2 cols) ---
-ax1 = fig.add_subplot(gs[0, :2])
-b1  = ax1.bar(years, counts, color=colors, width=0.6, edgecolor='none')
+# --- Panel 1: Bar chart total (full width) ---
+ax1 = fig.add_subplot(gs[0, :])
+b1 = ax1.bar(years, counts, color=colors, width=0.58, edgecolor='none', zorder=3)
 for bar, val in zip(b1, counts):
-    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 40,
-             f'{val:,}', ha='center', va='bottom', fontsize=9,
-             fontweight='bold', color=ACCENT)
-ax1.plot(years, counts, color=ACCENT, linewidth=2, marker='o', markersize=5)
-ax1.set_title('Total Peserta per Tahun', color=TEXT, fontsize=11)
-ax1.set_xticks(years); ax1.set_xticklabels([str(y) for y in years])
-ax1.set_facecolor(BG_CARD); ax1.grid(axis='y', color=GRID, linewidth=0.7)
-ax1.set_ylim(0, max(counts)*1.2)
+    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 85,
+             f'{val:,}', ha='center', va='bottom', fontsize=10,
+             fontweight='bold', color=ACCENT, clip_on=False)
+ax1.plot(years, counts, color=ACCENT, linewidth=2.2, marker='o', markersize=5, zorder=4)
+ax1.set_title('Total Peserta per Tahun', color=TEXT, fontsize=13, pad=12)
+ax1.set_xticks(years)
+ax1.set_xticklabels([str(y) for y in years], fontsize=10)
+ax1.set_ylabel('Jumlah Peserta', fontsize=10, color=TEXT)
+ax1.set_facecolor(BG_CARD)
+ax1.grid(axis='y', color=GRID, linewidth=0.7, zorder=0)
+ax1.set_ylim(0, max(counts) * 1.28)
 
 # --- Panel 2: Pie mapping ---
-ax2 = fig.add_subplot(gs[0, 2])
-ax2.pie([total_maped, total_unmap],
-        labels=['Termapped', 'Tidak\nTermapped'],
-        colors=[BLUE, MUTED], autopct='%1.1f%%',
-        startangle=90,
-        wedgeprops=dict(width=0.5, edgecolor=BG_CARD),
-        textprops=dict(color=TEXT, fontsize=9),
-        pctdistance=0.75)
-for at in ax2.texts:
-    if '%' in at.get_text():
-        at.set_fontweight('bold'); at.set_fontsize(10)
-ax2.set_title('Data Termapping', color=TEXT, fontsize=11)
+ax2 = fig.add_subplot(gs[1, 0])
+wedges, labels, pcts = ax2.pie(
+    [total_maped, total_unmap],
+    labels=['Termapped', 'Tidak Termapped'],
+    colors=[BLUE, MUTED], autopct='%1.1f%%', startangle=90,
+    wedgeprops=dict(width=0.42, edgecolor=BG_CARD, linewidth=2),
+    textprops=dict(color=TEXT, fontsize=10),
+    labeldistance=1.08, pctdistance=0.72
+)
+for pct in pcts:
+    pct.set_fontweight('bold')
+    pct.set_fontsize(11)
+ax2.set_title('Data Termapping', color=TEXT, fontsize=13, pad=14)
+ax2.set_aspect('equal')
 
 # --- Panel 3: Top 5 pelatihan ---
-ax3 = fig.add_subplot(gs[1, 0])
-df_top5 = df_top.head(5).iloc[::-1]
+ax3 = fig.add_subplot(gs[1, 1])
+df_top5 = df_top.head(5).iloc[::-1].copy()
+short_labels = ['\n'.join(textwrap.wrap(x, width=24))
+                for x in df_top5['Pelatihan_Mapped']]
 c3 = [ACCENT if n == 'ESG BASIC LEVEL' else BLUE
       for n in df_top5['Pelatihan_Mapped']]
-ax3.barh(df_top5['Pelatihan_Mapped'], df_top5['Jumlah_Peserta'],
-         color=c3, height=0.55)
+ax3.barh(short_labels, df_top5['Jumlah_Peserta'], color=c3, height=0.52, zorder=3)
 for bar, val in zip(ax3.patches, df_top5['Jumlah_Peserta']):
-    ax3.text(bar.get_width()+10, bar.get_y()+bar.get_height()/2,
-             f'{val:,}', va='center', fontsize=8, color=TEXT)
-ax3.set_title('Top 5 Pelatihan', color=TEXT, fontsize=11)
-ax3.set_facecolor(BG_CARD); ax3.grid(axis='x', color=GRID, linewidth=0.7)
-ax3.set_xlim(0, df_top5['Jumlah_Peserta'].max()*1.2)
+    ax3.text(bar.get_width() + 35, bar.get_y() + bar.get_height()/2,
+             f'{val:,}', va='center', fontsize=9, color=TEXT, clip_on=False)
+ax3.set_title('Top 5 Pelatihan', color=TEXT, fontsize=13, pad=14)
+ax3.set_facecolor(BG_CARD)
+ax3.grid(axis='x', color=GRID, linewidth=0.7, zorder=0)
+ax3.set_xlim(0, df_top5['Jumlah_Peserta'].max() * 1.28)
+ax3.tick_params(axis='y', labelsize=9)
 
 # --- Panel 4: Line + proyeksi ---
-ax4 = fig.add_subplot(gs[1, 1:])
+ax4 = fig.add_subplot(gs[2, 0])
 ax4.plot(list(range(2019, 2026)), list(hist.values()),
          color=BLUE, linewidth=2.5, marker='o', markersize=6,
-         label='Historis')
+         label='Historis', zorder=4)
 ax4.plot([2025, 2026, 2027],
          [hist[2025], forecast[2026], forecast[2027]],
          color=ACCENT, linewidth=2.5, marker='s', markersize=6,
-         linestyle='--', label='Proyeksi ARIMA')
+         linestyle='--', label='Proyeksi ARIMA', zorder=4)
 ax4.fill_between([2026, 2027],
-                [forecast[2026]*0.92, forecast[2027]*0.92],
-                [forecast[2026]*1.08, forecast[2027]*1.08],
-                color=ACCENT, alpha=0.15)
-ax4.axvline(x=2025.5, color=GRID, linestyle=':', linewidth=1.5)
-ax4.set_title('Tren & Proyeksi 2026–2027', color=TEXT, fontsize=11)
+                 [forecast[2026]*0.92, forecast[2027]*0.92],
+                 [forecast[2026]*1.08, forecast[2027]*1.08],
+                 color=ACCENT, alpha=0.15, zorder=2)
+ax4.axvline(x=2025.5, color=GRID, linestyle=':', linewidth=1.5, zorder=1)
+for yr, val in forecast.items():
+    ax4.text(yr, val + 120, f'{int(round(val)):,}',
+             ha='center', fontsize=9, fontweight='bold', color=ACCENT)
+ax4.set_title('Tren & Proyeksi 2026–2027', color=TEXT, fontsize=13, pad=14)
 ax4.set_xticks(list(range(2019, 2028)))
 ax4.set_xticklabels([str(y) for y in range(2019, 2028)], fontsize=9)
-ax4.set_facecolor(BG_CARD); ax4.grid(color=GRID, linewidth=0.7)
-ax4.legend(loc='upper left', fontsize=9)
+ax4.set_ylabel('Jumlah Peserta', fontsize=10, color=TEXT)
+ax4.set_ylim(0, 5200)
+ax4.set_facecolor(BG_CARD)
+ax4.grid(color=GRID, linewidth=0.7, zorder=0)
+ax4.legend(loc='upper left', fontsize=9, frameon=False)
 
 # --- Panel 5: Tabel ringkasan ---
-ax5 = fig.add_subplot(gs[1, 2])
+ax5 = fig.add_subplot(gs[2, 1])
 ax5.axis('off')
 summary_data = [
     ['Periode', 'Jumlah Peserta'],
@@ -713,26 +733,28 @@ summary_data = [
     ['2023', f'{hist[2023]:,}'],
     ['2024', f'{hist[2024]:,}'],
     ['2025', f'{hist[2025]:,}'],
-    ['─'*8, '─'*8],
-    ['2026 (Proy.)', f'{int(round(forecast[2026])):,}'],
-    ['2027 (Proy.)', f'{int(round(forecast[2027])):,}'],
+    ['2026 (Proyeksi)', f'{int(round(forecast[2026])):,}'],
+    ['2027 (Proyeksi)', f'{int(round(forecast[2027])):,}'],
 ]
-tbl = ax5.table(cellText=summary_data,
-                loc='center', cellLoc='center')
+tbl = ax5.table(cellText=summary_data, loc='center', cellLoc='center',
+                colWidths=[0.58, 0.42])
 tbl.auto_set_font_size(False)
-tbl.set_fontsize(9)
-tbl.scale(1.0, 1.3)
+tbl.set_fontsize(10)
+tbl.scale(1.0, 1.45)
 for (r, c), cell in tbl.get_celld().items():
+    cell.set_edgecolor(GRID)
+    cell.set_linewidth(0.8)
     cell.set_facecolor(BG_CARD2 if r % 2 == 0 else BG_CARD)
     cell.set_text_props(color=TEXT)
     if r == 0:
+        cell.set_facecolor(BG_CARD)
         cell.set_text_props(color=ACCENT, fontweight='bold')
-    if r in [8, 9, 10]:
-        cell.set_text_props(color=ACCENT)
-ax5.set_title('Ringkasan Data', color=TEXT, fontsize=11)
+    if r in [8, 9]:
+        cell.set_text_props(color=ACCENT, fontweight='bold')
+ax5.set_title('Ringkasan Data', color=TEXT, fontsize=13, pad=14)
 
-fig.text(0.01, 0.01, 'Human Capital Division  |  WIKAPratama  |  Januari 2026',
-         fontsize=8, color=MUTED)
+fig.text(0.08, 0.025, 'Human Capital Division  |  WIKAPratama  |  Januari 2026',
+         fontsize=9, color=MUTED)
 plt.savefig('dashboard_wika_pelatihan.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
