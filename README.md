@@ -42,12 +42,6 @@ Proyeksi peserta:
 
 Metode proyeksi menggunakan ARIMA pada data tahunan yang dinormalisasi, dengan pengecualian tahun 2020 sebagai tahun pandemi dan penyesuaian lonjakan ESG tahun 2025.
 
-## Cara menjalankan di Google Colab
-
-1. Buka notebook `Analisis_Pelatihan_WIKAPratama_Colab.ipynb`.
-2. Pilih `Runtime` → `Run all`.
-3. Notebook tidak perlu upload Excel manual karena data sudah tertanam di dalam notebook.
-
 ## Catatan data
 
 File Excel sumber tidak disertakan di repository untuk menghindari publikasi data internal mentah. Notebook memakai data yang sudah dikemas agar analisis tetap bisa direproduksi.
