@@ -22,7 +22,7 @@ try:                       # dijalankan sebagai file .py
     WORKDIR = os.path.dirname(os.path.abspath(__file__))
 except NameError:          # dijalankan di Jupyter/Colab
     WORKDIR = os.getcwd()
-print("📁 WORKDIR:", WORKDIR)
+print(" WORKDIR:", WORKDIR)
 
 # %%  [CELL 2] IMPORT & KONFIGURASI
 # ==================================
@@ -99,7 +99,7 @@ if FILE_PATH is None:
         "Di Colab: upload file lewat panel Files, lalu jalankan ulang cell ini.\n"
         "Path yang sudah dicoba:\n  " + "\n  ".join(CANDIDATES)
     )
-print(f"📂 Memakai file: {FILE_PATH}")
+print(f" Memakai file: {FILE_PATH}")
 
 df_raw = pd.read_excel(FILE_PATH, sheet_name=0)
 df_raw.columns = ['Tahun', 'Nama_Pelatihan']
@@ -108,7 +108,7 @@ df_raw['Nama_Pelatihan'] = df_raw['Nama_Pelatihan'].astype(str).str.strip()
 df_raw = df_raw.dropna(subset=['Tahun', 'Nama_Pelatihan'])
 df_raw['Tahun'] = df_raw['Tahun'].astype(int)
 
-print(f"✅ Data loaded: {len(df_raw):,} baris")
+print(f" Data loaded: {len(df_raw):,} baris")
 print(f"   Tahun      : {df_raw['Tahun'].min()} – {df_raw['Tahun'].max()}")
 print(f"   Jenis pelatihan unik: {df_raw['Nama_Pelatihan'].nunique()}")
 
@@ -120,7 +120,7 @@ df_year = (df_raw.groupby('Tahun')
              .reset_index(name='Jumlah_Peserta')
              .sort_values('Tahun'))
 
-print("\n📊 Total Peserta per Tahun:")
+print("\n Total Peserta per Tahun:")
 print(df_year.to_string(index=False))
 
 # ============================================================
@@ -325,7 +325,7 @@ total_unmap = total_all - total_maped
 pct_maped   = total_maped / total_all * 100
 pct_unmap   = total_unmap / total_all * 100
 
-print(f"\n🔗 Mapping Statistics:")
+print(f"\n Mapping Statistics:")
 print(f"   Total data          : {total_all:,}")
 print(f"   Termapping          : {total_maped:,} ({pct_maped:.1f}%)")
 print(f"   Tidak termapping    : {total_unmap:,} ({pct_unmap:.1f}%)")
@@ -393,7 +393,7 @@ plt.tight_layout()
 plt.savefig('grafik_1_total_peserta_pertahun.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
-print("✅ Grafik 1 disimpan: grafik_1_total_peserta_pertahun.png")
+print(" Grafik 1 disimpan: grafik_1_total_peserta_pertahun.png")
 
 # ============================================================
 # %%  [CELL 7] GRAFIK 2 — PIE CHART MAPPING (TERMAPPING vs TIDAK)
@@ -447,7 +447,7 @@ plt.tight_layout()
 plt.savefig('grafik_2_mapping_persentase.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
-print("✅ Grafik 2 disimpan: grafik_2_mapping_persentase.png")
+print(" Grafik 2 disimpan: grafik_2_mapping_persentase.png")
 
 # ============================================================
 # %%  [CELL 8] GRAFIK 3 — TOP 10 PELATIHAN TERBANYAK (2019–2025)
@@ -492,7 +492,7 @@ plt.tight_layout()
 plt.savefig('grafik_3_top_pelatihan.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
-print("✅ Grafik 3 disimpan: grafik_3_top_pelatihan.png")
+print(" Grafik 3 disimpan: grafik_3_top_pelatihan.png")
 
 # ============================================================
 # %%  [CELL 9] PROYEKSI ARIMA (2026–2027)
@@ -557,7 +557,7 @@ print(f"  R²     : {r2:.4f}")
 for yr, val in lr_pred.items():
     print(f"    {yr}: {int(round(val)):,} peserta")
 
-print(f"\n  ✅ Forecast yang digunakan: {forecast_method}")
+print(f"\n   Forecast yang digunakan: {forecast_method}")
 print("  (Slide referensi menyebut 2.436 / 2.631 — hasil reproduksi\n"
       "   berada di rentang yang sama; selisih kecil berasal dari\n"
       "   nilai penyesuaian internal yang tidak dipublikasikan)")
@@ -628,7 +628,7 @@ plt.tight_layout()
 plt.savefig('grafik_4_proyeksi_arima.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
-print("✅ Grafik 4 disimpan: grafik_4_proyeksi_arima.png")
+print(" Grafik 4 disimpan: grafik_4_proyeksi_arima.png")
 
 # ============================================================
 # %%  [CELL 11] DASHBOARD GABUNGAN (1 PAGE)
@@ -736,7 +736,7 @@ fig.text(0.01, 0.01, 'Human Capital Division  |  WIKAPratama  |  Januari 2026',
 plt.savefig('dashboard_wika_pelatihan.png',
             dpi=150, bbox_inches='tight', facecolor=BG)
 plt.show()
-print("✅ Dashboard disimpan: dashboard_wika_pelatihan.png")
+print(" Dashboard disimpan: dashboard_wika_pelatihan.png")
 
 # ============================================================
 # %%  [CELL 12] EXPORT HASIL KE EXCEL
@@ -762,7 +762,7 @@ with pd.ExcelWriter('hasil_analisis_pelatihan_wika.xlsx', engine='openpyxl') as 
     })
     proj_df.to_excel(writer, sheet_name='Proyeksi 2026-2027', index=False)
 
-print("✅ File Excel disimpan: hasil_analisis_pelatihan_wika.xlsx")
+print(" File Excel disimpan: hasil_analisis_pelatihan_wika.xlsx")
 
 # ============================================================
 # %%  [CELL 13] CETAK KESIMPULAN
@@ -772,28 +772,28 @@ print("""
 ║           KESIMPULAN ANALISIS PELATIHAN WIKAPratama          ║
 ╠══════════════════════════════════════════════════════════════╣
 ║                                                              ║
-║  📊 DATA HISTORIS (2019–2025)                                ║
+║   DATA HISTORIS (2019–2025)                                ║
 ║  • Total peserta 7 tahun : {:>7,} orang                      ║
 ║  • Rata-rata per tahun  : {:>7,.0f} orang                    ║
 ║  • Peserta tertinggi    : {:>7,} (2025)                      ║
 ║  • Peserta terendah     : {:>7,} (2020, pandemi)            ║
 ║                                                              ║
-║  📈 TREN UTAMA                                               ║
+║   TREN UTAMA                                               ║
 ║  • 2019→2020 : Penurunan {}% (pandemi COVID-19)              ║
 ║  • 2020→2025 : Kenaikan {}% (pemulihan + WIKAcademy)        ║
 ║  • 2025      : Lonjakan signifikan (ESG + mandatory)         ║
 ║                                                              ║
-║  🔗 KONSISTENSI DATA                                         ║
+║   KONSISTENSI DATA                                         ║
 ║  • Data termapping   : {:.1f}%                               ║
 ║  • Data tidak termapping: {:.1f}%                            ║
 ║                                                              ║
-║  🔮 PROYEKSI 2026–2027 (ARIMA + tren)                     ║
+║   PROYEKSI 2026–2027 (ARIMA + tren)                     ║
 ║  • 2026 : {:>6,} peserta                                    ║
 ║  • 2027 : {:>6,} peserta                                    ║
 ║  • Model membaca pertumbuhan STABIL & KONSISTEN              ║
 ║    (bukan lonjakan sementara)                               ║
 ║                                                              ║
-║  🏆 PELATIHAN TERBANYAK (2019–2025)                          ║
+║   PELATIHAN TERBANYAK (2019–2025)                          ║
 ║  1. ESG BASIC LEVEL         → {} peserta                     ║
 ║  2. ESG INTERMEDIATE LEVEL  → {} peserta                     ║
 ║  3. SUPERVISORY             → {} peserta                     ║
